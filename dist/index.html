@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#244be8" />
+    <meta
+      name="description"
+      content="Explore how inflation and savings interest change what your money can buy. An interactive, simple classroom simulator."
+    />
+    <title>Inflation Lab — See what your money can buy</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23244be8'/%3E%3Cpath d='M8 23V17M16 23V12M24 23V7' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">SMALL CHANGES. REAL DIFFERENCE.</p>
+          <h1 id="page-title">
+            What will your money <span>buy tomorrow?</span>
+          </h1>
+          <p>Move the sliders. Watch time pass. See inflation at work.</p>
+        </div>
+        <a class="learn-link" href="#the-basics"
+          >New to inflation? Start with the basics</a
+        >
+      </section>
+      <section
+        id="simulator"
+        class="simulator"
+        aria-label="Inflation simulator"
+      >
+        <aside class="controls panel" aria-labelledby="controls-title">
+          <div class="section-heading">
+            <h2 id="controls-title">Set the scene</h2>
+            <button id="reset" class="text-button" type="button">Reset</button>
+          </div>
+          <p class="muted control-intro">Your money. A few what-ifs.</p>
+          <div class="control">
+            <div class="control-label">
+              <label for="amount">Starting savings</label
+              ><output id="amount-output" for="amount">$100</output>
+            </div>
+            <input
+              id="amount"
+              type="range"
+              min="20"
+              max="1000"
+              step="10"
+              value="100"
+            />
+            <div class="range-labels"><span>$20</span><span>$1,000</span></div>
+          </div>
+          <div class="control">
+            <div class="control-label">
+              <label for="inflation">Annual inflation</label
+              ><output id="inflation-output" for="inflation">3%</output>
+            </div>
+            <input
+              id="inflation"
+              type="range"
+              min="0"
+              max="15"
+              step="0.5"
+              value="3"
+            />
+            <div class="range-labels"><span>0%</span><span>15%</span></div>
+            <p class="control-help">How quickly average prices rise.</p>
+          </div>
+          <div class="control">
+            <div class="control-label">
+              <label for="interest">Annual savings interest</label
+              ><output id="interest-output" for="interest">1%</output>
+            </div>
+            <input
+              id="interest"
+              type="range"
+              min="0"
+              max="15"
+              step="0.5"
+              value="1"
+            />
+            <div class="range-labels"><span>0%</span><span>15%</span></div>
+            <p class="control-help">What your savings earn each year.</p>
+          </div>
+          <div class="control">
+            <div class="control-label">
+              <label for="years">Time</label
+              ><output id="years-output" for="years">10 years</output>
+            </div>
+            <input
+              id="years"
+              type="range"
+              min="1"
+              max="30"
+              step="1"
+              value="10"
+            />
+            <div class="range-labels">
+              <span>1 year</span><span>30 years</span>
+            </div>
+          </div>
+          <div class="presets">
+            <p class="small-label">TRY A SCENARIO</p>
+            <button type="button" data-preset="steady" aria-pressed="false">
+              No inflation</button
+            ><button type="button" data-preset="behind" aria-pressed="false">
+              Prices outrun savings</button
+            ><button type="button" data-preset="ahead" aria-pressed="false">
+              Savings stay ahead
+            </button>
+          </div>
+        </aside>
+        <div class="results">
+          <section class="chart-panel panel" aria-labelledby="chart-title">
+            <div class="chart-heading">
+              <div>
+                <p class="eyebrow">THE BIG PICTURE</p>
+                <h2 id="chart-title">More dollars. Less buying power.</h2>
+              </div>
+              <span class="year-badge" id="year-badge">Year 10</span>
+            </div>
+            <div class="legend">
+              <span><i class="legend-line blue"></i>Account balance</span
+              ><span
+                ><i class="legend-line orange"></i>Buying power in today's
+                dollars</span
+              >
+            </div>
+            <div class="chart-wrap">
+              <svg
+                id="chart"
+                viewBox="0 0 740 280"
+                role="img"
+                aria-labelledby="graph-title graph-description"
+              >
+                <title id="graph-title">
+                  Savings and purchasing power over time
+                </title>
+                <desc id="graph-description">
+                  Enable JavaScript to explore the chart.
+                </desc>
+              </svg>
+            </div>
+            <div class="chart-bottom">
+              <p>
+                <span class="key-gap" aria-hidden="true"></span>The gap is the
+                effect of inflation.
+              </p>
+              <button type="button" class="play-button" id="play">
+                <span id="play-symbol" aria-hidden="true">▶</span
+                ><span id="play-label">Watch time pass</span>
+              </button>
+            </div>
+          </section>
+          <div class="stats" aria-label="Simulation results">
+            <article class="stat panel">
+              <p>Money in your account</p>
+              <strong id="balance">$110.46</strong
+              ><span id="earned">$10.46 earned in interest</span>
+            </article>
+            <article class="stat panel">
+              <p>What it can actually buy</p>
+              <strong id="purchasing">$82.19</strong
+              ><span>Measured in today's dollars</span>
+            </article>
+            <article class="stat stat-emphasis">
+              <p id="change-label">Buying power lost</p>
+              <strong id="change">17.8%</strong
+              ><span id="change-note">Prices grew faster than savings</span>
+            </article>
+          </div>
+          <div
+            class="takeaway"
+            id="takeaway"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            After 10 years, your $100 grows to $110.46, but buys what $82.19
+            buys today.
+          </div>
+        </div>
+      </section>
+      <section class="basket panel" aria-labelledby="basket-title">
+        <div class="basket-intro">
+          <span class="small-label">MAKE IT EVERYDAY</span>
+          <h2 id="basket-title">Same lunch. A different price.</h2>
+          <p>A simple $10 lunch, rising at your inflation rate.</p>
+        </div>
+        <div class="price-pair">
+          <div>
+            <span class="small-label">TODAY</span><strong>$10.00</strong>
+          </div>
+          <div class="price-divider" aria-hidden="true"></div>
+          <div>
+            <span class="small-label" id="lunch-year">IN 10 YEARS</span
+            ><strong id="lunch-price">$13.44</strong>
+          </div>
+        </div>
+        <div class="basket-note">
+          <strong id="lunch-change">34.4% more expensive</strong>
+          <p id="lunch-note">
+            Your lunch hasn't changed.<br />The value of a dollar has.
+          </p>
+        </div>
+      </section>
+      <p class="assumptions">
+        A simplified experiment: rates stay constant, interest compounds once a
+        year, and no money is added or withdrawn. Taxes and fees are excluded.
+        The lunch follows average inflation; real prices vary. These are
+        examples, not current rates or forecasts.
+      </p>
+      <section id="the-basics" class="basics" aria-labelledby="basics-title">
+        <div class="basics-heading">
+          <div>
+            <p class="eyebrow">THE BASICS, WITHOUT THE JARGON</p>
+            <h2 id="basics-title">Three ideas to take with you.</h2>
+          </div>
+          <p>
+            Understanding the numbers is easier<br />when you know the story
+            behind them.
+          </p>
+        </div>
+        <div class="lesson-grid">
+          <article class="lesson">
+            <span class="lesson-number">01</span>
+            <h3>Inflation</h3>
+            <p>
+              Inflation is a general rise in the prices of goods and services
+              across the economy over time. When prices rise, the same amount of
+              money buys less.
+            </p>
+            <div class="lesson-example">
+              At 3% inflation, a $100 basket costs $103 after one year.
+            </div>
+          </article>
+          <article class="lesson">
+            <span class="lesson-number">02</span>
+            <h3>Purchasing power</h3>
+            <p>
+              Purchasing power means what your money can buy. If your money
+              grows more slowly than prices, your purchasing power falls—even if
+              your account balance goes up.
+            </p>
+            <div class="lesson-example">
+              More money in your account doesn't always mean you can afford
+              more.
+            </div>
+          </article>
+          <article class="lesson">
+            <span class="lesson-number">03</span>
+            <h3>Interest</h3>
+            <p>
+              Interest is money you earn on savings, or pay for borrowing. With
+              compound interest, your savings earn interest on both the original
+              money and earlier interest.
+            </p>
+            <div class="lesson-example">
+              To gain buying power in this model, your savings rate must beat
+              inflation.
+            </div>
+          </article>
+        </div>
+        <div class="connection">
+          <div>
+            <span class="small-label">HOW THEY CONNECT</span>
+            <h3>Why do interest rates matter for inflation?</h3>
+          </div>
+          <p>
+            Central banks can raise policy interest rates to make borrowing more
+            expensive and saving more attractive. This can slow spending and
+            help reduce inflation over time. The savings rate above is what your
+            account earns; changing it here doesn't automatically change
+            inflation.
+          </p>
+        </div>
+        <details class="math-details">
+          <summary>See the simple math</summary>
+          <div class="math-content">
+            <p>
+              <strong>Future balance</strong> = starting savings × (1 + interest
+              rate)<sup>years</sup>
+            </p>
+            <p>
+              <strong>Buying power in today's dollars</strong> = future balance
+              ÷ (1 + inflation rate)<sup>years</sup>
+            </p>
+            <p>
+              <strong>Future lunch price</strong> = $10 × (1 + inflation
+              rate)<sup>years</sup>
+            </p>
+            <p>
+              Use rates as decimals: 3% = 0.03. If interest equals inflation,
+              buying power stays the same. Lower positive inflation means prices
+              rise more slowly, not that prices fall.
+            </p>
+          </div>
+        </details>
+      </section>
+      <noscript
+        ><p class="noscript">
+          Turn on JavaScript to use the sliders and animation. The explanation
+          section is still available to read.
+        </p></noscript
+      >
+    </main>
+    <footer>
+      <a class="brand footer-brand" href="#"
+        >Inflation<span class="brand-light">Lab</span></a
+      >
+      <p>Built for curious minds.</p>
+      <a
+        href="https://www.bankofengland.co.uk/explainers/what-are-interest-rates"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Learn more: Bank of England</a
+      >
+    </footer>
+  </body>
+</html>
