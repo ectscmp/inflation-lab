@@ -4,6 +4,35 @@ A small classroom simulator for inflation, purchasing power, and savings interes
 
 Open `dist/index.html` in any modern browser. Everything works offline; no installation or build is required. The Bank of England learning link needs internet access.
 
+## Run as a website
+
+With Node.js 24 installed, run these commands from the `inflation-lab` folder:
+
+```sh
+npm start
+```
+
+Open **http://localhost:3000**. Stop the server with Ctrl+C. There are no npm dependencies to install. Run `npm test` to check the server, site assets, and health endpoint.
+
+## Deploy to Railway
+
+1. Commit and push this project's files to your GitHub repository, including `dist/`, `Dockerfile`, `server.mjs`, and `package.json`.
+2. In Railway, create a project using **Deploy from GitHub repo** and select that repository.
+3. Use the directory containing `Dockerfile` as the service's **Root Directory**. This checkout is already rooted at `inflation-lab`, so leave the setting at `/` when uploading this repository. If your GitHub repository instead contains an outer `inflation-lab/` folder, set it to `/inflation-lab`.
+4. Railway detects the Dockerfile and starts the server automatically. Leave custom Build Command and Start Command empty. If you need an explicit Start Command, use `node server.mjs`.
+5. Under the service's deployment settings, set **Healthcheck Path** to `/health`.
+6. Under **Settings → Networking → Public Networking**, select **Generate Domain**. Open that address to present the site.
+
+The server listens on `0.0.0.0` and the `PORT` Railway supplies, with port 3000 as the local default. No API keys, database, volume, or other environment variables are required. `EXPOSE 3000` in the Dockerfile documents the local default; the running server still uses Railway's assigned `PORT`.
+
+The generated domain serves the site publicly. Class Challenge runs independently in each browser tab; students participate through the host's projected screen, and scores reset on reload.
+
+Railway's current documentation: [Dockerfile detection](https://docs.railway.com/builds/dockerfiles), [health checks](https://docs.railway.com/deployments/healthchecks), [root directories](https://docs.railway.com/deployments/monorepo), and [public domains](https://docs.railway.com/networking/public-networking).
+
+The Dockerfile copies only the server and public site files. It does not need a build step or package installation. The `dist/` files can still be opened directly for an offline presentation.
+
+## Using the simulator
+
 Adjust starting savings, inflation, annual savings interest, and years. Use the three scenarios or **Watch time pass** to present the changes year by year. **Reset** restores the starting example. The explanation and optional formulas are below the simulator.
 
 The model assumes constant rates, annual compounding, no deposits or withdrawals, and no taxes or fees. The lunch is a hypothetical item that follows the selected average inflation rate. The savings rate is independent of inflation in this model; monetary policy is explained separately.

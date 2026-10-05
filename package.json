@@ -1,0 +1,13 @@
+{
+  "name": "inflation-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive inflation simulator and classroom team challenge",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test"
+  }
+}
