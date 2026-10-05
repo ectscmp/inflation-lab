@@ -15,10 +15,65 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23244be8'/%3E%3Cpath d='M8 23V17M16 23V12M24 23V7' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E"
     />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="challenge.css" />
     <script src="app.js" defer></script>
+    <script src="challenge.js" defer></script>
   </head>
   <body>
     <main>
+      <div class="mode-switch" role="group" aria-label="Activity mode">
+        <button id="explore-mode" type="button" aria-pressed="true" aria-controls="explore-view">Explore</button>
+        <button id="challenge-mode" type="button" aria-pressed="false" aria-controls="challenge-view">Class challenge</button>
+      </div>
+      <section id="challenge-view" hidden aria-labelledby="challenge-title">
+        <div class="challenge-intro">
+          <div><p class="eyebrow">5 TEAMS · 4 PREDICTION ROUNDS · 1 FINALE</p><h1 id="challenge-title" tabindex="-1">Can your team <span>beat inflation?</span></h1><p>Make a prediction. Explain your thinking. Earn your place on the scoreboard.</p></div>
+        </div>
+        <div id="challenge-setup" class="challenge-setup panel">
+          <div class="setup-copy"><span class="round-kicker">BEFORE YOU BEGIN</span><h2>Get your teams together.</h2><p>Make five groups of 4–5 people. Run the game from this screen; teams just need paper and a pen.</p><ol><li><strong>Discuss for 45 seconds.</strong> Write a prediction and a reason.</li><li><strong>Show answers together.</strong> The host enters each team's prediction.</li><li><strong>Reveal and score.</strong> Correct prediction: 2 points. Clear explanation: 1 bonus point.</li></ol><p class="role-note">Rotate roles: captain, calculator, recorder, speaker, and an optional challenger.</p></div>
+          <form id="team-setup-form" class="team-setup-form">
+            <h3>Name your teams</h3>
+            <div id="team-name-fields"></div>
+            <p id="setup-error" class="form-error" role="alert"></p>
+            <button class="primary-button" type="submit">Start the challenge</button>
+            <p class="session-note">Keep this tab open. Reloading the page resets the game.</p>
+          </form>
+        </div>
+        <div id="challenge-game" hidden>
+          <div class="game-topline"><ol id="round-progress" class="round-progress" aria-label="Challenge progress"></ol><button id="new-game" class="text-button" type="button">New game</button></div>
+          <div id="restart-confirmation" class="restart-confirmation" hidden><p>Start a new game? This clears the current scores.</p><button id="confirm-restart" type="button" class="primary-button">Start new game</button><button id="cancel-restart" type="button" class="secondary-button">Keep playing</button></div>
+          <div class="game-layout">
+            <div>
+              <section id="round-stage" class="round-stage panel" aria-labelledby="round-title">
+                <div class="round-heading"><div><p id="round-counter" class="round-kicker"></p><h2 id="round-title" tabindex="-1"></h2></div><span id="round-state" class="round-state">Predict</span></div>
+                <dl id="round-settings" class="round-settings"></dl>
+                <p id="round-question" class="round-question"></p>
+                <p id="round-instruction" class="round-instruction"></p>
+                <div id="discussion-timer" class="discussion-timer">
+                  <div><span class="small-label">DISCUSSION TIME</span><strong id="timer-display" role="timer" aria-label="45 seconds remaining">0:45</strong><span id="timer-status">Ready when you are</span></div>
+                  <div class="timer-actions"><button id="timer-toggle" type="button" class="secondary-button">Start timer</button><button id="timer-reset" type="button" class="text-button">Reset to 45s</button></div>
+                </div>
+                <div id="prediction-area"><div class="entry-heading"><h3>Lock in your predictions</h3><span>Host enters the teams' written answers</span></div><div id="team-predictions" class="team-predictions"></div></div>
+                <p id="round-error" class="form-error" role="alert"></p>
+                <button id="reveal-results" type="button" class="primary-button reveal-button">Reveal results</button>
+                <section id="round-reveal" class="round-reveal" hidden aria-labelledby="reveal-title">
+                  <span class="round-kicker">THE REVEAL</span><h3 id="reveal-title"></h3><p id="reveal-explanation"></p>
+                  <div class="reveal-numbers"><div><span>Account balance</span><strong id="challenge-balance"></strong></div><div><span>Buying power today</span><strong id="challenge-purchasing"></strong></div><div><span>Buying power change</span><strong id="challenge-change"></strong></div></div>
+                  <div class="legend"><span><i class="legend-line blue"></i>Account balance</span><span><i class="legend-line orange"></i>Buying power in today's dollars</span></div>
+                  <div class="chart-wrap"><svg id="challenge-chart" viewBox="0 0 740 280" role="img" aria-labelledby="challenge-graph-title challenge-graph-description"></svg></div>
+                  <p id="scoring-hint" class="scoring-hint"></p><div id="round-awards" class="round-awards"></div>
+                  <button id="next-round" type="button" class="primary-button">Next round</button>
+                </section>
+              </section>
+              <section id="game-finish" class="game-finish panel" hidden aria-labelledby="winner-title"><span class="round-kicker">CHALLENGE COMPLETE</span><h2 id="winner-title" tabindex="-1"></h2><p id="winner-description"></p><div id="final-standings"></div><div class="final-lesson"><h3>The idea that wins beyond this game</h3><p>Look at what your money can buy, not just the number in your account. In this model, savings gain buying power when interest beats inflation.</p></div><button id="play-again" type="button" class="primary-button">Play again</button></section>
+            </div>
+            <aside class="scoreboard panel" aria-labelledby="scoreboard-title"><div class="scoreboard-heading"><h2 id="scoreboard-title">Scoreboard</h2><span>14 points possible</span></div><ol id="scoreboard-list"></ol><p id="scoreboard-note">Points appear after each reveal.</p><div class="score-key"><span><strong>+2</strong> Correct prediction</span><span><strong>+1</strong> Clear explanation</span><span><strong>+2</strong> Closest finale guess</span></div></aside>
+          </div>
+          <p class="game-assumptions">Every round starts fresh with $100. Rates stay constant, interest compounds annually, and there are no deposits, withdrawals, taxes, or fees. Teams share this screen; no student login is needed.</p>
+        </div>
+        <p id="challenge-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+      </section>
+      <div id="explore-view">
       <section class="intro" aria-labelledby="page-title">
         <div>
           <p class="eyebrow">SMALL CHANGES. REAL DIFFERENCE.</p>
@@ -309,6 +364,7 @@
           section is still available to read.
         </p></noscript
       >
+      </div>
     </main>
     <footer>
       <a

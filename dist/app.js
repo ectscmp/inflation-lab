@@ -52,35 +52,38 @@ if (typeof document !== 'undefined') {
     return ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(step => step >= normalized) || 10) * magnitude;
   }
 
-  function drawChart(result) {
+  function drawChart(result, options = {}) {
+    const settings = options.settings || state;
+    const yearShown = options.year ?? displayYear;
+    const prefix = options.prefix || 'graph';
     const width = 740, height = 280;
     const left = 64, right = 21, top = 20, bottom = 40;
     const plotWidth = width - left - right, plotHeight = height - top - bottom;
-    const end = calculate(state.amount, state.inflation, state.interest, state.years);
-    const maxValue = niceMaximum(Math.max(end.balance, end.purchasing, state.amount) * 1.14);
-    const x = year => left + year / state.years * plotWidth;
+    const end = calculate(settings.amount, settings.inflation, settings.interest, settings.years);
+    const maxValue = niceMaximum(Math.max(end.balance, end.purchasing, settings.amount) * 1.14);
+    const x = year => left + year / settings.years * plotWidth;
     const y = value => top + plotHeight - value / maxValue * plotHeight;
     const tickMoney = value => value >= 1000 ? `$${percent(value / 1000)}k` : wholeMoney(value);
-    let svg = `<title id="graph-title">Account balance and buying power over ${state.years} years</title><desc id="graph-description">At year ${displayYear}, your account holds ${money(result.balance)}, with buying power of ${money(result.purchasing)} in today's dollars. The solid blue line is the account balance. The dashed orange line is buying power. The vertical axis shows dollars and the horizontal axis shows years.</desc>`;
+    let svg = `<title id="${prefix}-title">Account balance and buying power over ${settings.years} years</title><desc id="${prefix}-description">At year ${yearShown}, your account holds ${money(result.balance)}, with buying power of ${money(result.purchasing)} in today's dollars. The solid blue line is the account balance. The dashed orange line is buying power. The vertical axis shows dollars and the horizontal axis shows years.</desc>`;
     for (let i = 0; i <= 4; i++) {
       const value = maxValue * i / 4;
       svg += `<line x1="${left}" y1="${y(value)}" x2="${width - right}" y2="${y(value)}" stroke="#e9edf5" ${i ? 'stroke-dasharray="3 5"' : ''}/><text x="${left - 12}" y="${y(value) + 4}" text-anchor="end" fill="#748198" font-size="12" font-family="inherit">${tickMoney(value)}</text>`;
     }
-    const ticks = Array.from(new Set([0, ...Array.from({ length: 4 }, (_, i) => Math.round((i + 1) * state.years / 4))]));
+    const ticks = Array.from(new Set([0, ...Array.from({ length: 4 }, (_, i) => Math.round((i + 1) * settings.years / 4))]));
     ticks.forEach(year => {
       svg += `<text x="${x(year)}" y="${height - 15}" text-anchor="middle" fill="#748198" font-size="12" font-family="inherit">${year === 0 ? 'Today' : `Year ${year}`}</text>`;
     });
-    const samples = Math.max(1, displayYear * 6);
+    const samples = Math.max(1, yearShown * 6);
     const points = Array.from({ length: samples + 1 }, (_, index) => {
-      const year = displayYear * index / samples;
-      const value = calculate(state.amount, state.inflation, state.interest, year);
+      const year = yearShown * index / samples;
+      const value = calculate(settings.amount, settings.inflation, settings.interest, year);
       return { x: x(year), balance: y(value.balance), purchasing: y(value.purchasing) };
     });
     const path = key => points.map((point, index) => `${index ? 'L' : 'M'}${point.x.toFixed(2)},${point[key].toFixed(2)}`).join(' ');
     const area = `${path('balance')} ${[...points].reverse().map(point => `L${point.x.toFixed(2)},${point.purchasing.toFixed(2)}`).join(' ')} Z`;
     svg += `<path d="${area}" fill="#eef1fd"/><path d="${path('balance')}" fill="none" stroke="#244be8" stroke-width="3" stroke-linecap="round"/><path d="${path('purchasing')}" fill="none" stroke="#d65a37" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round"/>`;
-    svg += `<line x1="${x(displayYear)}" y1="${top}" x2="${x(displayYear)}" y2="${height - bottom}" stroke="#b9c4dc" stroke-dasharray="3 5"/><circle cx="${x(displayYear)}" cy="${y(result.balance)}" r="5" fill="#244be8" stroke="white" stroke-width="2"/><circle cx="${x(displayYear)}" cy="${y(result.purchasing)}" r="5" fill="#d65a37" stroke="white" stroke-width="2"/>`;
-    byId('chart').innerHTML = svg;
+    svg += `<line x1="${x(yearShown)}" y1="${top}" x2="${x(yearShown)}" y2="${height - bottom}" stroke="#b9c4dc" stroke-dasharray="3 5"/><circle cx="${x(yearShown)}" cy="${y(result.balance)}" r="5" fill="#244be8" stroke="white" stroke-width="2"/><circle cx="${x(yearShown)}" cy="${y(result.purchasing)}" r="5" fill="#d65a37" stroke="white" stroke-width="2"/>`;
+    (options.target || byId('chart')).innerHTML = svg;
   }
 
   function render(announce = true) {
@@ -150,6 +153,16 @@ if (typeof document !== 'undefined') {
   });
   syncControls();
   render(false);
+
+  window.inflationLab = {
+    calculate,
+    renderChart(target, settings) {
+      drawChart(calculate(settings.amount, settings.inflation, settings.interest, settings.years), {
+        target, settings, year: settings.years, prefix: 'challenge-graph'
+      });
+    },
+    pause() { if (timer !== null) { paused = true; stopAnimation(); } }
+  };
 
   // Optional browser tool support; ordinary browsers use the same UI without it.
   const context = document.modelContext;
