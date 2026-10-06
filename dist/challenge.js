@@ -115,7 +115,7 @@ if (typeof document !== 'undefined') {
       stopClock();
       remaining = 45000;
       timerStarted = false;
-      $('timer-status').textContent = 'Ready when you are';
+      $('timer-status').textContent = '';
       drawClock();
     }
 
