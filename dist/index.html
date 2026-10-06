@@ -21,6 +21,7 @@
   </head>
   <body>
     <main>
+      <div class="activity-navigation" id="activity-navigation">
       <div class="mode-switch" role="group" aria-label="Activity mode">
         <button
           id="explore-mode"
@@ -38,6 +39,8 @@
         >
           Class challenge
         </button>
+      </div>
+      <a id="key-terms-link" class="key-terms-link" href="#key-terms-title">Key terms</a>
       </div>
       <section id="challenge-view" hidden aria-labelledby="challenge-title">
         <div class="challenge-intro">
@@ -303,13 +306,13 @@
               <input
                 id="inflation"
                 type="range"
-                min="0"
+                min="-5"
                 max="15"
                 step="0.5"
                 value="3"
               />
-              <div class="range-labels"><span>0%</span><span>15%</span></div>
-              <p class="control-help">How quickly average prices rise.</p>
+              <div class="range-labels"><span>−5%</span><span>15%</span></div>
+              <p class="control-help">Yearly price change. Below 0% means deflation.</p>
             </div>
             <div class="control">
               <div class="control-label">
@@ -353,6 +356,9 @@
               ><button type="button" data-preset="ahead" aria-pressed="false">
                 Savings stay ahead
               </button>
+              <button type="button" data-preset="deflation" aria-pressed="false">
+                Deflation
+              </button>
             </div>
           </aside>
           <div class="results">
@@ -388,8 +394,7 @@
               </div>
               <div class="chart-bottom">
                 <p>
-                  <span class="key-gap" aria-hidden="true"></span>The gap is the
-                  effect of inflation.
+                  <span class="key-gap" aria-hidden="true"></span><span id="chart-gap-note">The gap is the effect of inflation.</span>
                 </p>
                 <button type="button" class="play-button" id="play">
                   <span id="play-symbol" aria-hidden="true">▶</span
@@ -430,7 +435,7 @@
           <div class="basket-intro">
             <span class="small-label">MAKE IT EVERYDAY</span>
             <h2 id="basket-title">Same lunch. A different price.</h2>
-            <p>A simple $10 lunch, rising at your inflation rate.</p>
+            <p>A simple $10 lunch, following your inflation rate.</p>
           </div>
           <div class="price-pair">
             <div>
@@ -449,22 +454,39 @@
             </p>
           </div>
         </section>
+        <section class="index-example panel" aria-labelledby="index-example-title">
+          <div class="index-example-intro">
+            <span class="small-label">FROM PRICES TO A PRICE INDEX</span>
+            <h2 id="index-example-title">Track a whole market basket.</h2>
+            <p>Buy the same amounts of groceries, transport, and supplies at two different times.</p>
+          </div>
+          <div class="index-example-grid">
+            <table class="basket-table">
+              <caption class="sr-only">Illustrative market basket costs, using the selected inflation rate</caption>
+              <thead><tr><th scope="col">Basket item</th><th scope="col">Today</th><th scope="col" id="basket-year">Year 10</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Groceries</th><td>$50.00</td><td id="groceries-price">$67.20</td></tr>
+                <tr><th scope="row">Transport</th><td>$30.00</td><td id="transport-price">$40.32</td></tr>
+                <tr><th scope="row">Supplies</th><td>$20.00</td><td id="supplies-price">$26.88</td></tr>
+              </tbody>
+              <tfoot><tr><th scope="row">Basket total</th><td>$100.00</td><td id="basket-total">$134.39</td></tr></tfoot>
+            </table>
+            <div class="index-readout">
+              <span class="small-label">MODEL PRICE INDEX · TODAY = 100</span>
+              <strong id="price-index">134.4</strong>
+              <p id="index-formula">($134.39 ÷ $100.00) × 100 ≈ 134.4</p>
+              <p id="index-explanation">At 3% per year, this basket costs 34.4% more after 10 years.</p>
+            </div>
+          </div>
+          <p class="index-model-note">This is a classroom example, not the official CPI. Every item follows your selected rate; real consumer prices change at different rates. Totals use unrounded values.</p>
+        </section>
         <p class="assumptions">
           A simplified experiment: rates stay constant, interest compounds once
           a year, and no money is added or withdrawn. Taxes and fees are
           excluded. The lunch follows average inflation; real prices vary. These
           are examples, not current rates or forecasts.
         </p>
-        <section id="the-basics" class="basics" aria-labelledby="basics-title">
-          <div class="basics-heading">
-            <div>
-              <h2 id="basics-title">Three ideas to take with you.</h2>
-            </div>
-            <p>
-              Understanding the numbers is easier<br />when you know the story
-              behind them.
-            </p>
-          </div>
+        <section id="the-basics" class="basics" aria-label="Inflation, purchasing power, and interest basics">
           <div class="lesson-grid">
             <article class="lesson">
               <span class="lesson-number">01</span>
@@ -548,6 +570,32 @@
           </p></noscript
         >
       </div>
+      <section id="key-terms" class="key-terms" aria-labelledby="key-terms-title">
+        <div class="key-terms-heading"><div><h2 id="key-terms-title" tabindex="-1">Key terms for this model</h2><p>Open a term for a definition and a quick example.</p></div><a href="#activity-navigation">Back to activity</a></div>
+        <div class="terms-grid">
+          <details class="term-card" id="term-inflation-rate">
+            <summary>Inflation rate</summary>
+            <div class="term-content"><p>The percentage change in the overall price level over a stated period. The simulator uses an <strong>annual</strong> rate.</p><p class="term-example">If a price index rises from 120 to 126 in one year, the inflation rate is <strong>5%</strong>, not 6%.</p><p class="term-formula">(New index − old index) ÷ old index × 100</p><p class="term-note">The index measures the price level; the inflation rate measures how quickly it changes.</p></div>
+          </details>
+          <details class="term-card" id="term-market-basket">
+            <summary>Market basket</summary>
+            <div class="term-content"><p>A collection of goods and services used to track prices. In a simple fixed-basket example, compare the cost of the <strong>same items and quantities</strong> over time.</p><p class="term-example">Our example basket starts with $50 of groceries, $30 of transport, and $20 of supplies: $100 altogether.</p><p class="term-note">Using several items shows a broader picture than the price of one lunch.</p></div>
+          </details>
+          <details class="term-card" id="term-price-index">
+            <summary>Price index</summary>
+            <div class="term-content"><p>An index compares a value with a reference point. A <strong>price index</strong> compares price levels over time, often setting the base period to 100.</p><p class="term-example">If the same basket costs $100 in the base period and $110 later, its index is <strong>110</strong>: prices are 10% above the base period.</p><p class="term-formula">Current basket cost ÷ base-period cost × 100</p><p class="term-note">This is our simplified fixed-basket formula. An index of 110 does not tell you how quickly prices changed in the last year.</p></div>
+          </details>
+          <details class="term-card" id="term-cpi">
+            <summary>Consumer Price Index (CPI)</summary>
+            <div class="term-content"><p>Consumer prices are the prices households pay. In the U.S., the <strong>CPI</strong> tracks average price changes for a representative basket bought by urban consumers.</p><p class="term-example">Housing, food, transport, and other purchases contribute to the index. Categories with larger spending shares carry more weight.</p><p class="term-note">CPI is a real-world price index. Our small basket only illustrates the idea; it does not calculate the official CPI.</p><a class="term-source" href="https://www.bls.gov/cpi/questions-and-answers.htm" target="_blank" rel="noopener noreferrer">Source: U.S. Bureau of Labor Statistics</a></div>
+          </details>
+          <details class="term-card" id="term-deflation">
+            <summary>Deflation</summary>
+            <div class="term-content"><p>A sustained decline in the general price level: the inflation rate is <strong>negative</strong>. A dollar can buy more as prices fall, if your money stays the same.</p><p class="term-example">At −2% over one year, a $100 basket becomes $98 and its price index becomes 98. Try the <strong>Deflation</strong> preset in Explore.</p><p class="term-note">Inflation slowing from 5% to 2% is disinflation: prices still rise. A sale on one product is not economy-wide deflation. Falling prices can also come with falling incomes and make debts harder to repay.</p><a class="term-source" href="https://www.stlouisfed.org/open-vault/2023/august/explaining-inflation-disinflation-deflation" target="_blank" rel="noopener noreferrer">Source: Federal Reserve Bank of St. Louis</a></div>
+          </details>
+        </div>
+        <p class="terms-use-note">Use these terms in your team’s explanation. Opening “Key terms” pauses a running discussion timer; return to the activity to resume it.</p>
+      </section>
     </main>
     <footer>
       <a

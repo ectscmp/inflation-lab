@@ -353,6 +353,10 @@ if (typeof document !== 'undefined') {
     $('team-setup-form').addEventListener('submit', startGame);
     $('explore-mode').addEventListener('click', () => setMode('explore'));
     $('challenge-mode').addEventListener('click', () => setMode('challenge'));
+    $('key-terms-link').addEventListener('click', () => {
+      pauseClock();
+      window.inflationLab.pause();
+    });
     $('timer-toggle').addEventListener('click', () => {
       if (timerHandle !== null) { pauseClock(); return; }
       if (!game.active || game.finished || game.records[game.round].revealed || remaining <= 0) return;

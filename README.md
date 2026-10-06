@@ -33,13 +33,25 @@ The Dockerfile copies only the server and public site files. It does not need a 
 
 ## Using the simulator
 
-Adjust starting savings, inflation, annual savings interest, and years. Use the three scenarios or **Watch time pass** to present the changes year by year. **Reset** restores the starting example. The explanation and optional formulas are below the simulator.
+Adjust starting savings, inflation, annual savings interest, and years. Use the four scenarios or **Watch time pass** to present the changes year by year. **Reset** restores the starting example. The explanation and optional formulas are below the simulator.
 
 The model assumes constant rates, annual compounding, no deposits or withdrawals, and no taxes or fees. The lunch is a hypothetical item that follows the selected average inflation rate. The savings rate is independent of inflation in this model; monetary policy is explained separately.
 
 Files: `dist/index.html` (content), `dist/styles.css` (appearance), `dist/app.js` (calculations and interaction).
 
 Calculations use full precision and round only for display. Dollar amounts use US formatting. Example rates are not live economic data.
+
+## Introductory economics terms
+
+The class textbook is Houghton Mifflin Harcourt's *Economics* (2018), student ISBN 978-0-544-85929-6, identified from the supplied cover. The site uses original introductory explanations, not quotations from or verified reproductions of the textbook. Definitions draw on the linked Bureau of Labor Statistics and Federal Reserve educational sources.
+
+The original lesson explains inflation, purchasing power, and interest. **Key terms** adds inflation rate, market basket, price index, Consumer Price Index (CPI), and deflation. Advanced monetary theories are outside this basic model.
+
+Explore now includes a fixed example basket: $50 in groceries, $30 in transport, and $20 in supplies in the base period. Its costs and price index update with the inflation and time sliders, independently of starting savings or the interest rate. Today is index 100. Every item follows the same assumed rate, so this illustrates a price index rather than estimating the official CPI. Basket totals use full precision; displayed item costs can differ from the displayed total by a cent due to rounding.
+
+The inflation slider ranges from -5% to 15%. The **Deflation** preset sets inflation to -2% and savings interest to 0%, showing falling prices and greater buying power for unchanged savings. The example holds money constant and does not model changes in jobs, income, or debt.
+
+Key terms is available from both modes. Following its link pauses the discussion timer and any simulator animation while keeping the activity state. The five challenge rounds and scoring remain the same.
 
 ## Class Challenge
 
